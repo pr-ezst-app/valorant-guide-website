@@ -35,11 +35,7 @@ const INITIAL_COMMENTS = [
   { user: "KillJoyIGL", time: "Yesterday", text: "Anyone else think Omen's paranoia usage is underrated at lower ranks? This guide opened my eyes.", likes: 134, replies: 41 },
 ];
 
-const INITIAL_VIDEOS = [
-  { id: "dQw4w9WgXcQ", title: "Jett Mechanics — Advanced Movement Guide", tag: "Agent Tips", views: "124K" },
-  { id: "ScMzIvxBSi4", title: "Economy Masterclass — Never Lose on Eco Again", tag: "Strategy", views: "89K" },
-  { id: "9bZkp7q19f0", title: "Map Control Breakdown — Split & Bind", tag: "Map Guide", views: "201K" },
-];
+const INITIAL_VIDEOS: { id: string; title: string; tag: string; views: string }[] = [];
 
 const SECTIONS = ["Home", "Guide", "Videos", "Community", "FAQ", "About"];
 
