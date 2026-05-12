@@ -35,7 +35,13 @@ const INITIAL_COMMENTS = [
   { user: "KillJoyIGL", time: "Yesterday", text: "Anyone else think Omen's paranoia usage is underrated at lower ranks? This guide opened my eyes.", likes: 134, replies: 41 },
 ];
 
-const SECTIONS = ["Home", "Guide", "Community", "FAQ", "About"];
+const INITIAL_VIDEOS = [
+  { id: "dQw4w9WgXcQ", title: "Jett Mechanics — Advanced Movement Guide", tag: "Agent Tips", views: "124K" },
+  { id: "ScMzIvxBSi4", title: "Economy Masterclass — Never Lose on Eco Again", tag: "Strategy", views: "89K" },
+  { id: "9bZkp7q19f0", title: "Map Control Breakdown — Split & Bind", tag: "Map Guide", views: "201K" },
+];
+
+const SECTIONS = ["Home", "Guide", "Videos", "Community", "FAQ", "About"];
 
 const roleColor: Record<string, string> = {
   Duelist: "#ff4655",
@@ -47,6 +53,11 @@ const roleColor: Record<string, string> = {
 export default function Index() {
   const [activeSection, setActiveSection] = useState("Home");
   const [comments, setComments] = useState(INITIAL_COMMENTS);
+  const [videos, setVideos] = useState(INITIAL_VIDEOS);
+  const [activeVideo, setActiveVideo] = useState<string | null>(null);
+  const [newVideoUrl, setNewVideoUrl] = useState("");
+  const [newVideoTitle, setNewVideoTitle] = useState("");
+  const [newVideoTag, setNewVideoTag] = useState("");
   const [newComment, setNewComment] = useState("");
   const [newUser, setNewUser] = useState("");
   const [openFaq, setOpenFaq] = useState<number | null>(null);
@@ -57,6 +68,20 @@ export default function Index() {
     setMobileMenuOpen(false);
     const el = document.getElementById(id.toLowerCase());
     if (el) el.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const extractYouTubeId = (url: string) => {
+    const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/))([a-zA-Z0-9_-]{11})/);
+    return match ? match[1] : url.trim();
+  };
+
+  const addVideo = () => {
+    if (!newVideoUrl.trim() || !newVideoTitle.trim()) return;
+    const id = extractYouTubeId(newVideoUrl);
+    setVideos([{ id, title: newVideoTitle.trim(), tag: newVideoTag.trim() || "Video", views: "New" }, ...videos]);
+    setNewVideoUrl("");
+    setNewVideoTitle("");
+    setNewVideoTag("");
   };
 
   const submitComment = () => {
@@ -210,6 +235,120 @@ export default function Index() {
 
       {/* DIVIDER */}
       <div className="w-full h-px" style={{ background: "linear-gradient(90deg, transparent, var(--val-red), var(--val-cyan), transparent)" }} />
+
+      {/* VIDEOS */}
+      <section id="videos" className="py-24 max-w-6xl mx-auto px-6">
+        <div className="flex items-center gap-4 mb-3">
+          <div className="h-px w-8" style={{ background: "var(--val-red)" }} />
+          <span className="tag" style={{ color: "var(--val-red)", background: "rgba(255,70,85,0.08)" }}>YouTube</span>
+        </div>
+        <h2 className="font-barlow font-bold mb-4" style={{ fontSize: "clamp(2.5rem, 5vw, 4rem)", color: "#fff", letterSpacing: "-0.01em" }}>
+          VID<span style={{ color: "var(--val-red)" }}>EOS</span>
+        </h2>
+        <p className="font-rajdhani mb-10" style={{ color: "#8892a4", fontSize: "1.05rem", maxWidth: "480px" }}>
+          Watch guides, breakdowns, and gameplay analysis straight from YouTube.
+        </p>
+
+        {/* Add Video Form */}
+        <div className="p-6 rounded-sm mb-10" style={{ background: "var(--val-card)", border: "1px solid var(--val-border)" }}>
+          <h3 className="font-rajdhani font-bold text-white mb-4 tracking-wide">ADD A VIDEO</h3>
+          <div className="grid md:grid-cols-3 gap-3 mb-4">
+            <input
+              type="text"
+              placeholder="YouTube URL or video ID..."
+              value={newVideoUrl}
+              onChange={e => setNewVideoUrl(e.target.value)}
+              className="md:col-span-2 px-4 py-2.5 rounded-sm font-rajdhani text-sm text-white placeholder-gray-600 outline-none transition-colors"
+              style={{ background: "rgba(255,255,255,0.04)", border: "1px solid var(--val-border)" }}
+            />
+            <input
+              type="text"
+              placeholder="Tag (e.g. Strategy, Tips...)"
+              value={newVideoTag}
+              onChange={e => setNewVideoTag(e.target.value)}
+              className="px-4 py-2.5 rounded-sm font-rajdhani text-sm text-white placeholder-gray-600 outline-none transition-colors"
+              style={{ background: "rgba(255,255,255,0.04)", border: "1px solid var(--val-border)" }}
+            />
+          </div>
+          <div className="flex gap-3">
+            <input
+              type="text"
+              placeholder="Video title..."
+              value={newVideoTitle}
+              onChange={e => setNewVideoTitle(e.target.value)}
+              className="flex-1 px-4 py-2.5 rounded-sm font-rajdhani text-sm text-white placeholder-gray-600 outline-none transition-colors"
+              style={{ background: "rgba(255,255,255,0.04)", border: "1px solid var(--val-border)" }}
+            />
+            <button
+              onClick={addVideo}
+              className="font-rajdhani font-bold tracking-widest text-sm text-white px-6 py-2.5 rounded-sm flex items-center gap-2"
+              style={{ background: "var(--val-red)", letterSpacing: "0.12em", whiteSpace: "nowrap" }}
+            >
+              <Icon name="Plus" size={15} />
+              ADD VIDEO
+            </button>
+          </div>
+        </div>
+
+        {/* Video Player Modal */}
+        {activeVideo && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.85)", backdropFilter: "blur(8px)" }} onClick={() => setActiveVideo(null)}>
+            <div className="w-full max-w-4xl rounded-sm overflow-hidden" style={{ border: "1px solid var(--val-border)" }} onClick={e => e.stopPropagation()}>
+              <div className="flex items-center justify-between px-4 py-3" style={{ background: "var(--val-card)" }}>
+                <span className="font-rajdhani font-bold text-white text-sm">Now Playing</span>
+                <button onClick={() => setActiveVideo(null)} style={{ color: "#8892a4" }}><Icon name="X" size={18} /></button>
+              </div>
+              <div style={{ aspectRatio: "16/9" }}>
+                <iframe
+                  src={`https://www.youtube.com/embed/${activeVideo}?autoplay=1`}
+                  className="w-full h-full"
+                  allow="autoplay; fullscreen"
+                  allowFullScreen
+                />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Video Grid */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+          {videos.map((vid, i) => (
+            <div
+              key={i}
+              className="val-card-hover rounded-sm overflow-hidden cursor-pointer group"
+              style={{ background: "var(--val-card)", border: "1px solid var(--val-border)" }}
+              onClick={() => setActiveVideo(vid.id)}
+            >
+              <div className="relative" style={{ aspectRatio: "16/9" }}>
+                <img
+                  src={`https://img.youtube.com/vi/${vid.id}/hqdefault.jpg`}
+                  alt={vid.title}
+                  className="w-full h-full object-cover"
+                  style={{ filter: "brightness(0.75)" }}
+                />
+                <div className="absolute inset-0 flex items-center justify-center" style={{ background: "rgba(0,0,0,0.3)", transition: "background 0.2s" }}>
+                  <div className="w-12 h-12 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform" style={{ background: "var(--val-red)" }}>
+                    <Icon name="Play" size={20} color="#fff" />
+                  </div>
+                </div>
+                <div className="absolute top-3 left-3">
+                  <span className="tag" style={{ color: "var(--val-cyan)", background: "rgba(0,0,0,0.7)", border: "1px solid rgba(0,229,208,0.3)" }}>{vid.tag}</span>
+                </div>
+                <div className="absolute bottom-3 right-3 flex items-center gap-1 font-rajdhani text-xs" style={{ color: "rgba(255,255,255,0.7)" }}>
+                  <Icon name="Eye" size={12} />
+                  {vid.views} views
+                </div>
+              </div>
+              <div className="p-4">
+                <p className="font-rajdhani font-semibold text-white text-sm leading-snug">{vid.title}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* DIVIDER 2 */}
+      <div className="w-full h-px" style={{ background: "linear-gradient(90deg, transparent, var(--val-cyan), var(--val-red), transparent)" }} />
 
       {/* COMMUNITY */}
       <section id="community" className="py-24 max-w-6xl mx-auto px-6">
