@@ -29,11 +29,7 @@ const GUIDE_CHAPTERS = [
   { icon: "Shield", title: "Clutch Mechanics", desc: "1v2 and 1v3 decision trees, spike timing, and sound mastery.", tag: "Advanced" },
 ];
 
-const INITIAL_COMMENTS = [
-  { user: "PhoenixMain", time: "2 hours ago", text: "The economy chapter finally convinced me to stop force buying every round. Won 3 extra rounds just from proper saves.", likes: 47, replies: 12 },
-  { user: "SilverSova", time: "5 hours ago", text: "Jett tip is 100% accurate. My kill count dropped but my survival rate went up and we actually won more.", likes: 89, replies: 23 },
-  { user: "KillJoyIGL", time: "Yesterday", text: "Anyone else think Omen's paranoia usage is underrated at lower ranks? This guide opened my eyes.", likes: 134, replies: 41 },
-];
+const INITIAL_COMMENTS: { user: string; time: string; text: string; likes: number; replies: number }[] = [];
 
 const INITIAL_VIDEOS: { id: string; title: string; tag: string; views: string }[] = [];
 
